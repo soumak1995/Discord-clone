@@ -4,6 +4,7 @@
     flex:0.75;
     background-color: #363a3f;
     height: 100vh;
+    
 }
 .chat__input{
     color:lightgray;
@@ -12,6 +13,7 @@
     justify-content: space-between;
     padding:15px;
     background-color: #474b53;
+    bottom: 0;
 }
 .chat__input > form >input{
     padding:15px;
@@ -33,4 +35,5 @@
 }
 .chat__messages{
     flex:1;
+    overflow: auto;
 }

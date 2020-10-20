@@ -10,7 +10,7 @@ import '../css/ChatHeader.css'
 function ChatHeader({channelName}) {
     return (
         <div className="chatHeader">
-            <div class="chatHeader__left">
+            <div className="chatHeader__left">
                 <h3>
                     <span className="chatHeader__hash">
                         #
@@ -18,7 +18,7 @@ function ChatHeader({channelName}) {
                     {channelName}
                     </h3>
             </div>
-            <div class="chatHeader__right">
+            <div className="chatHeader__right">
                <NotificationsIcon />
                <EditLocationIcon/>
                <PeopleAltRounded/>

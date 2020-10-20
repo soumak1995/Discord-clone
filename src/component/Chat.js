@@ -1,4 +1,4 @@
-import React from 'react'
+import React,{useEffect, useState}from 'react'
 import '../css/chat.css'
 import ChatHeader from './ChatHeader'
 import AddCircleIcon from '@material-ui/icons/AddCircle';
@@ -9,26 +9,67 @@ import Message from './Message'
 import { useSelector } from 'react-redux';
 import { selectUser } from '../features/userSlice';
 import {selectChannelName,selectChannelId} from '../features/appSlice'
+import db from '../firebase'
+import firebase from 'firebase'
 function Chat() {
     const user = useSelector(selectUser);
     const ChannelId=useSelector(selectChannelId);
     const ChannelName=useSelector(selectChannelName);
-  console.log(ChannelName)
+    const [input,setInput]=useState('');
+    const [messages,setMessages]=useState([]);
+  console.log(ChannelName,ChannelId)
+  useEffect(()=>{
+    if(ChannelId){
+      db.collection('channels')
+      .doc(ChannelId)
+      .collection('message')
+      .orderBy('timestamp','desc')
+      .onSnapshot((snapshot)=>{
+        setMessages(snapshot.docs.map((doc)=>doc.data()));
+   })
+    }
+    
+  },[ChannelId] )
+  const sentMessage=e=>{
+    alert();
+    e.preventDefault();
+   db.collection('channels').doc(ChannelId).collection('message')
+   .add({
+     timestamp:firebase.firestore.FieldValue.serverTimestamp(),
+     message:input,
+     user:user
+   });
+   setInput("");
+  }
+  console.log(messages.timestamp)
     return (
         <div className="chat">
     
             <ChatHeader 
             channelName={ChannelName}/>
             <div className="chat__messages">
-               <Message/>
-               <Message/>
-               <Message/>
+              {messages.map((message,index)=>(
+                  <Message
+                  key={index}
+                  timestamp={message.timestamp}
+                  message={message.message}
+                  user={message.user}
+                  />
+              ))}
             </div>
             <div className="chat__input">
               <AddCircleIcon fontSize="large"/>
               <form>
-                  <input placeholder={"Massage #TESTCHANNEL"}/>
-                  <button className="chat__inputButton" type="submit">
+                  <input placeholder={`Massage #${ChannelName}`} 
+                  vlaue={input} 
+                  disabled={!ChannelId}
+                  onChange={(e)=>setInput(e.target.value)}
+                  />
+                  <button 
+                  className="chat__inputButton" 
+                  disabled={!ChannelId}
+                  type="submit"
+                  onClick={sentMessage}>
                       Send Message
                   </button>
               </form>
